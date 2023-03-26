@@ -79,6 +79,7 @@ void
 testcall() {
   struct sysinfo info;
   
+  // Pass the address of info into sysinfo
   if (sysinfo(&info) < 0) {
     printf("FAIL: sysinfo failed\n");
     exit(1);

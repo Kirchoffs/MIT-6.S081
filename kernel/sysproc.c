@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
 
 uint64
 sys_exit(void)
@@ -98,6 +99,8 @@ sys_uptime(void)
 
 uint64
 sys_trace(void) {
+  // printf("sysproc.c: uint64 sys_trace(void)\n");
+
   int trace_mask;
 
   if (argint(0, &trace_mask) < 0) {
@@ -105,5 +108,27 @@ sys_trace(void) {
   }
 
   myproc()->trace_mask = trace_mask;
+  return 0;
+}
+
+uint64
+sys_sysinfo(void)
+{
+  // *sysinfo will save the address passed from user
+  // check the code in user/sysinfotest.c
+  uint64 sysinfo;
+  if (argaddr(0, &sysinfo) < 0)
+  {
+    return -1;
+  }
+  struct sysinfo info;
+  info.freemem = get_free_memory();
+  info.nproc = get_process_number();
+
+  struct proc *p = myproc();
+  if (copyout(p->pagetable, sysinfo, (char *)&info, sizeof(info)) < 0) 
+  {
+    return -1;
+  }
   return 0;
 }

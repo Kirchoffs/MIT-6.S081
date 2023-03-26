@@ -21,6 +21,7 @@ kvmmake(void)
 {
   pagetable_t kpgtbl;
 
+  // root page table page
   kpgtbl = (pagetable_t) kalloc();
   memset(kpgtbl, 0, PGSIZE);
 
@@ -88,9 +89,11 @@ walk(pagetable_t pagetable, uint64 va, int alloc)
     if(*pte & PTE_V) {
       pagetable = (pagetable_t)PTE2PA(*pte);
     } else {
-      if(!alloc || (pagetable = (pde_t*)kalloc()) == 0)
+      if(!alloc || (pagetable = (pde_t*)kalloc()) == 0) // What is pde_t
         return 0;
-      memset(pagetable, 0, PGSIZE);
+      memset(pagetable, 0, PGSIZE); // PGSIZE = 4096 = 512 PTEs
+                                    // PTE = Reserved(10) + PPN(44) + Flags(10)
+      // here after kalloc, pagetable is a physical address
       *pte = PA2PTE(pagetable) | PTE_V;
     }
   }
