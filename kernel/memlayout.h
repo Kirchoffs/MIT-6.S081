@@ -4,10 +4,16 @@
 // based on qemu's hw/riscv/virt.c:
 //
 // 00001000 -- boot ROM, provided by qemu
-// 02000000 -- CLINT
-// 0C000000 -- PLIC
+//          -- This is the start address of the boot ROM provided by QEMU. 
+//          -- The boot ROM contains the first code that is executed when the machine is started, and typically loads the operating system kernel into memory.
+// 02000000 -- CLINT (Core Local Interruptor)
+//          -- It is a timer and interrupt controller used by RISC-V systems. It generates timer interrupts and handles software interrupts.   
+// 0C000000 -- PLIC (Platform Level Interrupt Controller)
+//          -- It is another interrupt controller used by RISC-V systems. It handles external interrupts from devices such as the UART and the virtio disk.
 // 10000000 -- uart0 
+//          -- This is the start address of the UART0 device, which is a serial port used for input and output.
 // 10001000 -- virtio disk 
+//          -- This is the start address of the virtio disk device, which is a virtual hard disk that is used to store the operating system and other data.
 // 80000000 -- boot ROM jumps here in machine mode
 //             -kernel loads the kernel here
 // unused RAM after 80000000.
