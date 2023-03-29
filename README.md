@@ -15,3 +15,7 @@
 ```
 >> ./grade-lab-pgtbl ugetpid
 ```
+or
+```
+>> make grade
+```

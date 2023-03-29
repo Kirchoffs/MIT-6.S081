@@ -432,3 +432,35 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
     return -1;
   }
 }
+
+void strcat(char *s, const char *t)
+{
+  while (*s)
+    s++;
+  while ((*s++ = *t++) != 0)
+    ;
+}
+
+void vmprint_level(int level, pagetable_t pagetable) {
+  if (level < 0) { return; }
+
+  char indent[9] = "..";
+  for (int i = 0; i < 2 - level; i++) {
+    strcat(indent, " ..");
+  }
+
+  for (int i = 0; i < 512; i++) {
+    pte_t pte = pagetable[i];
+    if (pte & PTE_V) {
+      uint64 pa = PTE2PA(pte);
+      printf("%s%d: pte %p pa %p\n", indent, i, pte, pa);
+      vmprint_level(level - 1, (pagetable_t) pa);
+    }
+  }
+}
+
+void
+vmprint(pagetable_t pagetable) {
+  printf("page table %p\n", pagetable);
+  vmprint_level(2, pagetable);
+}
