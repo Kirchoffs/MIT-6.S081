@@ -126,7 +126,7 @@ walkaddr(pagetable_t pagetable, uint64 va)
 void
 kvmmap(pagetable_t kpgtbl, uint64 va, uint64 pa, uint64 sz, int perm)
 {
-  if(mappages(kpgtbl, va, sz, pa, perm) != 0)
+  if (mappages(kpgtbl, va, sz, pa, perm) != 0)
     panic("kvmmap");
 }
 

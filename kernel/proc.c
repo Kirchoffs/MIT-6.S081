@@ -660,24 +660,45 @@ void
 procdump(void)
 {
   static char *states[] = {
-  [UNUSED]    "unused",
-  [SLEEPING]  "sleep ",
-  [RUNNABLE]  "runble",
-  [RUNNING]   "run   ",
-  [ZOMBIE]    "zombie"
+    [UNUSED]    "unused",
+    [SLEEPING]  "sleep ",
+    [RUNNABLE]  "runble",
+    [RUNNING]   "run   ",
+    [ZOMBIE]    "zombie"
   };
   struct proc *p;
   char *state;
 
   printf("\n");
-  for(p = proc; p < &proc[NPROC]; p++){
-    if(p->state == UNUSED)
+  for (p = proc; p < &proc[NPROC]; p++) {
+    if (p->state == UNUSED)
       continue;
-    if(p->state >= 0 && p->state < NELEM(states) && states[p->state])
+    if (p->state >= 0 && p->state < NELEM(states) && states[p->state])
       state = states[p->state];
     else
       state = "???";
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+int
+pgaccess(uint64 page, int n, uint64 buf) {
+  struct proc *p = myproc();
+  if (p == 0) {
+    return -1;
+  }
+
+  pagetable_t pagetable = p->pagetable;
+  int MAX_BIT = 64;
+  int mask = 0;
+  for (int i = 0; i < n && i < MAX_BIT; i++) {
+    pte_t *pte = walk(pagetable, page + i * PGSIZE, 0);
+    if (*pte & PTE_A) {
+      mask |= 1 << i;
+      *pte &= ~PTE_A;
+    }
+  }
+
+  return copyout(pagetable, buf, (char*) &mask, sizeof(mask));
 }

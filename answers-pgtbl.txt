@@ -1,0 +1,10 @@
+# 1
+Each user process need one page created for speeding up system call.
+So we need to put the new page just below trapframe
+Read how trapframe works and do the similar thing
+
+# 2
+Use DFS to print the PTE tree
+
+# 3
+PTE_A is the 6th bit in PTE.
